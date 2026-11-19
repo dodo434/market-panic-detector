@@ -30,6 +30,7 @@ dev = [
   "bandit==1.9.3",
   "black==26.10.1",
   "mypy==1.19.1",
+  "types-PyYAML==6.0.12.20261113",
   "pip-audit==2.10.0",
   "pytest==9.2.0",
   "pytest-cov==7.0.0",
