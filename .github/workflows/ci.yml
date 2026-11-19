@@ -18,8 +18,15 @@ jobs:
       - run: ruff check src tests scripts
       - run: black --check src tests scripts
       - run: mypy src
-      - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libxcb-cursor0 libegl1 libgl1 libxkbcommon-x11-0 xvfb
+      - name: Install Qt X11 runtime
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libegl1 libgl1 libgl1-mesa-dri libxkbcommon-x11-0 \
+            libxcb-cursor0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libxcb-xinerama0
+          plugin=$(python -c 'from PySide6.QtCore import QLibraryInfo as Q; print(Q.path(Q.LibraryPath.PluginsPath) + "/platforms/libqxcb.so")')
+          ldd -r "$plugin" | tee "$RUNNER_TEMP/qt-libraries.txt"
+          if grep -F "not found" "$RUNNER_TEMP/qt-libraries.txt"; then exit 1; fi
       - if: runner.os == 'Linux'
         run: xvfb-run -a python -m pytest
       - if: runner.os == 'Windows'

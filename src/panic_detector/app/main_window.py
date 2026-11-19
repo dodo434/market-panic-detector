@@ -9,7 +9,6 @@ import pyqtgraph as pg
 from PySide6.QtCore import Qt, QSettings, QTimer, QThreadPool
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
-    QApplication,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -21,7 +20,17 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from panic_detector.app.advanced import Advanced
-from panic_detector.app.widgets import Gauge, Map, YearAxis, heading, icon, label, rule, slider
+from panic_detector.app.widgets import (
+    accelerated_plots_available,
+    Gauge,
+    Map,
+    YearAxis,
+    heading,
+    icon,
+    label,
+    rule,
+    slider,
+)
 from panic_detector.app.workers import Job
 from panic_detector.config import load_settings
 from panic_detector.data.paths import selected_file
@@ -62,9 +71,7 @@ class MainWindow(QMainWindow):
         self.play_timer = QTimer(self)
         self.play_timer.setTimerType(Qt.TimerType.PreciseTimer)
         self.play_timer.timeout.connect(self.advance)
-        pg.setConfigOptions(
-            useOpenGL=QApplication.platformName() not in {"offscreen", "minimal"}, antialias=False
-        )
+        pg.setConfigOptions(useOpenGL=accelerated_plots_available(), antialias=False)
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
         self.dashboard = QWidget()

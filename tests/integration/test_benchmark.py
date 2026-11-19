@@ -28,12 +28,11 @@ def test_warm_start_and_frames(tmp_path, monkeypatch):
     if sys.platform.startswith("linux") and not (env.get("DISPLAY") or env.get("WAYLAND_DISPLAY")):
         env["QT_QPA_PLATFORM"] = "offscreen"
     script = Path(__file__).resolve().parents[2] / "scripts/benchmark.py"
+    command = [sys.executable, str(script), "--cache-root", str(tmp_path)]
+    # A first desktop launch initializes OS file caches, fonts and graphics drivers.
+    subprocess.run([*command, "--frames", "1"], env=env, check=True, timeout=45)
     result = subprocess.run(
-        [sys.executable, str(script), "--cache-root", str(tmp_path), "--frames", "60", "--check"],
-        env=env,
-        capture_output=True,
-        text=True,
-        timeout=45,
+        [*command, "--frames", "60", "--check"], env=env, capture_output=True, text=True, timeout=45
     )
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads(result.stdout)

@@ -18,6 +18,28 @@ from PySide6.QtWidgets import (
 from panic_detector.viz.theme import COLORS
 
 
+def accelerated_plots_available() -> bool:
+    """Use GL on a hardware context and Qt raster painting on software-only desktops."""
+    from PySide6.QtGui import QGuiApplication, QOffscreenSurface, QOpenGLContext
+
+    if QGuiApplication.platformName() in {"offscreen", "minimal"}:
+        return False
+    context = QOpenGLContext()
+    if not context.create():
+        return False
+    surface = QOffscreenSurface()
+    surface.setFormat(context.format())
+    surface.create()
+    if not context.makeCurrent(surface):
+        return False
+    try:
+        renderer = (context.functions().glGetString(0x1F01) or "").lower()  # GL_RENDERER
+        software = ("llvmpipe", "softpipe", "swiftshader", "basic render", "gdi generic")
+        return bool(renderer) and not any(name in renderer for name in software)
+    finally:
+        context.doneCurrent()
+
+
 def icon() -> QIcon:
     pix = QPixmap(64, 64)
     pix.fill(QColor(COLORS["background"]))

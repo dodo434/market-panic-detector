@@ -1,6 +1,6 @@
 """Measure process startup to a painted, usable cached timeline and completed repaints."""
 
-from time import perf_counter
+from time import perf_counter, sleep
 import argparse
 import json
 import sys
@@ -20,6 +20,7 @@ def measure(
     from panic_detector.viz.theme import STYLESHEET
     from panic_detector.app.entrypoint import configure_surface
 
+    imports_s = perf_counter() - START
     configure_surface()
     with TemporaryDirectory() as tmp:
         prefs = QSettings(str(Path(tmp) / "settings.ini"), QSettings.Format.IniFormat)
@@ -29,13 +30,20 @@ def measure(
         app.setStyleSheet(STYLESHEET)
         window = MainWindow(prefs, root)
         window.show()
+        shown_s = perf_counter() - START
         while window.view is None:
             app.processEvents()
+            sleep(0.001)
             if perf_counter() - START > 30 or window.stack.currentWidget() == window.keys:
                 raise RuntimeError("Prepare the offline cache before running the benchmark.")
         app.processEvents()
         window.repaint()
         startup = perf_counter() - START
+        from PySide6.QtOpenGLWidgets import QOpenGLWidget
+
+        gl = isinstance(window.map.viewport(), QOpenGLWidget)
+        if full and not gl:
+            raise RuntimeError("GPU readback requires an accelerated OpenGL desktop.")
         times = []
         for index in np.linspace(0, window.date_slider.maximum(), frames, dtype=int):
             start = perf_counter()
@@ -49,6 +57,9 @@ def measure(
         window.close()
         return {
             "startup_s": round(startup, 4),
+            "imports_s": round(imports_s, 4),
+            "shown_s": round(shown_s, 4),
+            "opengl": gl,
             "frames": len(times),
             "p50_ms": round(float(np.median(times)), 3),
             "p95_ms": round(float(np.percentile(times, 95)), 3),
