@@ -1,0 +1,13 @@
+alpaca-py>=0.42
+imageio>=2.37
+matplotlib>=3.9
+networkx>=3.4
+numpy>=2.1
+pandas>=2.2
+pyarrow>=17.0
+Pillow>=11.0
+pytest>=8.3
+seaborn>=0.13
+PySide6>=6.8
+pyqtgraph>=0.13
+pyinstaller>=6.11
