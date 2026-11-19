@@ -1,5 +1,8 @@
 .venv/
 venv/
+frontend/node_modules/
+frontend/dist/
+*.egg-info/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -11,9 +14,10 @@ dist/
 build/
 *.spec.backup
 cache/
-data/raw/
-data/interim/
-data/processed/
+data/raw/*
+data/interim/*
+data/processed/*
+!data/*/.gitkeep
 output/
 screenshots/
 api.txt
@@ -25,3 +29,10 @@ api.txt
 *.parquet.tmp
 *.log
 .DS_Store
+
+myfiles.zip
+*.npy
+*.npz
+*.parquet
+*.p12
+/core

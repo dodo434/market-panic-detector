@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools==84.2.1", "wheel==0.48.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "market-panic-detector"
+version = "1.0.0"
+description = "Plain-language market correlation and panic detector"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+  "alpaca-py==0.42.2",
+  "keyring==25.7.0",
+  "numpy==2.4.1",
+  "pandas==2.3.3",
+  "Pillow==13.0.0",
+  "platformdirs==4.14.7",
+  "PyOpenGL==3.1.10",
+  "pyqtgraph==0.14.0",
+  "pyarrow==26.0.1",
+  "PyYAML==6.0.3",
+  "requests==2.34.2",
+  "urllib3==2.8.0",
+  "PySide6==6.12.0",
+  "scipy==1.16.3; python_version < '3.12'",
+  "scipy==1.18.1; python_version >= '3.12'",
+]
+
+[project.optional-dependencies]
+dev = [
+  "bandit==1.9.3",
+  "black==26.10.1",
+  "mypy==1.19.1",
+  "pip-audit==2.10.0",
+  "pytest==9.2.0",
+  "pytest-cov==7.0.0",
+  "ruff==0.14.14",
+  "pyinstaller==6.22.3",
+]
+research = [
+  "matplotlib==3.10.8",
+  "nbclient==0.11.0",
+  "ipykernel==7.4.0",
+  "networkx==3.6.1",
+  "imageio==2.38.2",
+]
+web = [
+  "fastapi==0.165.0",
+  "httpx==0.28.1",
+  "uvicorn==0.54.0",
+  "pydantic==2.14.4",
+  "yfinance==1.8.0",
+  "textblob==0.20.1",
+  "scikit-learn==1.9.1",
+]
+
+[project.scripts]
+market-panic-detector = "panic_detector.app.entrypoint:run"
+market-panic = "panic_detector.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src", mood_configs = "configs"}
+packages = ["mood_configs", "panic_detector", "panic_detector.app", "panic_detector.data", "panic_detector.features", "panic_detector.models", "panic_detector.networks", "panic_detector.viz"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
+testpaths = ["tests"]
+addopts = "--cov=panic_detector.features --cov=panic_detector.models --cov-report=term-missing --cov-fail-under=80"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/panic_detector/features", "src/panic_detector/models", "src/panic_detector/data"]
+ignore_missing_imports = true
+strict = false
+
+
+[tool.setuptools.package-data]
+mood_configs = ["*.yaml"]
+"panic_detector.app" = ["*.ico"]
