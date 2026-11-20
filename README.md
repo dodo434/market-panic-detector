@@ -7,6 +7,13 @@
 
 **See when a basket of stocks starts behaving like one stock.** Market Mood is a native desktop app for Windows and Linux with a terminal fallback.
 
+## Clone
+
+```bash
+git clone https://github.com/dodo434/market-panic-detector.git
+cd market-panic-detector
+```
+
 ![The desktop switches between a calm November 2026 session and a tightly grouped October 2022 selloff reading](docs/figures/market-mood.gif)
 
 One dot represents one stock. As stocks move together more often, their dots draw inward. A reading of 90 means the basket's strongest shared move accounted for more variation than in about nine out of ten earlier windows. Stocks can move together on the way up, too.
