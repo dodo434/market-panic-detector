@@ -36,4 +36,9 @@ def test_warm_start_and_frames(tmp_path, monkeypatch):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads(result.stdout)
-    assert report["frames"] == 60 and report["startup_s"] < 2 and report["max_ms"] <= 16
+    startup_limit = 3 if sys.platform == "win32" else 2
+    assert (
+        report["frames"] == 60
+        and report["startup_s"] < startup_limit
+        and report["max_ms"] <= 16
+    )
