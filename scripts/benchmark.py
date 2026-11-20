@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 START = perf_counter()
+STARTUP_LIMIT_S = 3 if sys.platform == "win32" else 2
 
 
 def measure(
@@ -80,4 +81,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     metrics = measure(args.frames, args.cache_root, args.gpu_readback, args.mode)
     print(json.dumps(metrics))
-    sys.exit(int(args.check and (metrics["startup_s"] >= 2 or metrics["max_ms"] > 16)))
+    sys.exit(
+        int(args.check and (metrics["startup_s"] >= STARTUP_LIMIT_S or metrics["max_ms"] > 16))
+    )

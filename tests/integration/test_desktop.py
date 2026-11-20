@@ -10,6 +10,16 @@ import pandas as pd
 from PIL import Image
 
 
+def test_accelerated_plots_disabled_on_offscreen(monkeypatch):
+    monkeypatch.setenv("QT_QPA_PLATFORM", "offscreen")
+    from PySide6.QtWidgets import QApplication
+    from panic_detector.app.widgets import accelerated_plots_available
+
+    app = QApplication.instance() or QApplication([])
+    assert accelerated_plots_available() is False
+    app.processEvents()
+
+
 def test_desktop_controls_cache_and_exports(tmp_path, monkeypatch):
     if sys.platform.startswith("linux") and not (
         os.getenv("DISPLAY") or os.getenv("WAYLAND_DISPLAY")

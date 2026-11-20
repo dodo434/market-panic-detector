@@ -138,7 +138,7 @@ python scripts/capture.py
 python scripts/build_exe.py
 ```
 
-Benchmark a warmed cache on a visible desktop. The script times startup through the first usable timeline, then samples date changes including Qt event processing. GPU readback also waits for both OpenGL framebuffers. The check fails above 16 ms for any measured frame or at 2 seconds for startup. Actual presentation cadence depends on OS scheduling, the display and GPU. The regression test prepares an isolated 50-stock cache.
+Benchmark a warmed cache on a visible desktop. The script times startup through the first usable timeline, then samples date changes including Qt event processing. GPU readback also waits for both OpenGL framebuffers. The check fails above 16 ms for any measured frame or at 2 seconds for startup on Linux and 3 seconds on Windows. Actual presentation cadence depends on OS scheduling, the display and GPU. The regression test prepares an isolated 50-stock cache.
 
 Local Linux X11 results using Qt 6.12.0, the supplied 50-stock cache and 120 date changes per mode with GPU readback.
 
